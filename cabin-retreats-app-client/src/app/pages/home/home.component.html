@@ -1,0 +1,11 @@
+<!--<button (click)="protectedRequest()">Test</button>
+<button (click)="getAccessToken()">Get Token</button>
+<button (click)="refreshToken()">Refresh Token</button>-->
+<button (click)="openModal()">Open Modal</button>
+<div class="card-container">
+    @for(cabin of this.cabins; track cabin.id){
+        <!--<app-cabin-card [cabin]="cabin" [guests_and_number_of_nights]="guests" [numberOfNights]="numberOfNights" [check_in]="check_in" [check_out]="check_out"/>-->
+        <app-cabin-card [cabin]="cabin"/>
+    }
+</div>
+

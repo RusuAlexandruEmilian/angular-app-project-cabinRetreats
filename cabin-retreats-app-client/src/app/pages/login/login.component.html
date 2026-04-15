@@ -1,0 +1,23 @@
+<div class="page-layout">
+    <nav><img class="navbar-logo" src="assets/images/cabin-retreats-edited.png" alt="brand image"></nav>
+    <div class='login-form-container'>
+        <form class="login-form" (submit)="onSubmit()">
+            <div class="form-elements form-title">Log in</div>
+            @if(wrongCredentials){
+                <div class="wrong-credentials-warning-container">
+                    <img src="assets/icons/exclamation.png" id="warning-icon">
+                    <div id="wrong-credentials-warning">Wrong email or password</div>
+                </div>
+            }
+            <input class="form-elements inputs" id="name" name="email" type="email" placeholder="email" [formControl]="email">
+            @if(email.invalid && email.touched){
+                <div id="email-warning">
+                    Please enter a valid email address
+                </div>
+            }
+            <input class="form-elements inputs" id="password" name="password" type="password" placeholder="password" [formControl]="pwd">
+            <button class="form-elements" type="submit" [disabled]="email.invalid || pwd.invalid">Login</button>
+            <div id="form-footer">Don't have an account? <span id="route-to-register" routerLink="/register">Register</span></div> 
+        </form>
+    </div>
+</div>
