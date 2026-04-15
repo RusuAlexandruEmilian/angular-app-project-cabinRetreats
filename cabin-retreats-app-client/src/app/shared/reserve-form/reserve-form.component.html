@@ -1,44 +1,69 @@
 
 <!--<div class="reserve-form-container-wrapper">-->
     <!-- <div class="reserve-form-container"> -->
-    @if(cabin && searchInputs){
+    
+    <div class="success-message-container">
+        <div id="success-message">&#x2714; Booking successfully created!</div>
+        <button id="continue-button">Continue</button>
+    </div>
+    <!-- @if(cabin && searchInputs){
         <div class="toolbar">
                 <div (click)="closeModal()" id="close-modal-button">&#10006;</div>
         </div>
         <div class="reservation-details">
             <img id="cabin-picture" src="{{cabin.picture}}">
-            <!-- <img id="cabin-picture" src="assets/images/cabin-images/Apuseni Explorer's Base.jpg"> -->
+            <img id="cabin-picture" src="assets/images/cabin-images/Apuseni Explorer's Base.jpg">
             <div id="cabin-name">{{ cabin.name }}</div>
-            <!-- <div id="cabin-name">Pine Haven</div> -->
+            <div id="cabin-name">Pine Haven</div>
             <div class="location-container">
                 <img src="assets/icons/pin.png" id="pin">
                 <div id="cabin-location">{{ cabin.location }}, {{ cabin.county }}</div>
-                <!-- <div id="cabin-location">Cavnic, Maramures</div> -->
+                <div id="cabin-location">Cavnic, Maramures</div>
             </div>
             <div id="check-in-out">
                 <div id="dates">
                     <img src="assets/icons/calendar.png">
                     <div>Check-in: {{ searchInputs.start_date }}</div>
-                    <!-- <div>Check-in: 2026-04-02</div> -->
+                    <div>Check-in: 2026-04-02</div>
                 </div>
                 <div id="dates">
                     <img src="assets/icons/calendar.png">
                     <div>Check-out: {{ searchInputs.end_date }}</div>
-                    <!-- <div>Check-out: 2026-04-05</div> -->
+                    <div>Check-out: 2026-04-05</div>
                 </div>
             </div>
             <div id="guests">{{ guests_and_number_of_nights }}</div>
             <div id="price-per-night">{{ cabin.price_per_night }} &euro;/night</div>
-            <!-- <div id="guests">2 nights, 1 adult</div>
-            <div id="price-per-night">74 &euro;/night</div> -->
+            <div id="guests">2 nights, 1 adult</div>
+            <div id="price-per-night">74 &euro;/night</div>
             <div id="total-price">
                 <div>Total</div>
                 <div>{{ totalPrice }} &euro;</div>
-                <!-- <div>148 &euro;</div> -->
+                <div>148 &euro;</div>
             </div>
             <div (click)="bookCabin()" id="reserve-button">Reserve</div>
         </div>
-    }    
+    } -->
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <!--
         <div class="reserve-form-wraper">
             
