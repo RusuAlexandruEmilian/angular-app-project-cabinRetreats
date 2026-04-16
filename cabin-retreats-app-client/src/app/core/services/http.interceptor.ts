@@ -19,7 +19,7 @@ export const httpInterceptor: HttpInterceptorFn = (req: any, next: any) => {
     
   }
 
-  //return next(req);
+  
   
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
@@ -28,12 +28,23 @@ export const httpInterceptor: HttpInterceptorFn = (req: any, next: any) => {
         return handle401Error(req, next, authService, router, dialog);
       }
       if(error.status === 400 && req.url.includes('/book')){
-        console.warn("Not logged in!");
-        const currentUrl = router.url
-        router.navigate(['/login'], {
+        const errorCode = error.error.code;
+        if(errorCode === 'UNAUTHORIZED ACCESS'){
+          console.warn("Not logged in!");
+          const currentUrl = router.url
+          router.navigate(['/login'], {
           state: { returnUrl: currentUrl }
-        });
-        dialog.closeAll();
+          });
+          dialog.closeAll();
+          return throwError(() => error)
+        }
+
+        if(errorCode === 'MISSING BOOKING DATA'){
+          console.log('Missing Booking Data!');
+          authService.logOut();
+          dialog.closeAll();
+        }
+        
       }
       return throwError(() => error);
     })
@@ -56,10 +67,16 @@ function handle401Error(req:any, next:any, authService: AuthenticationService, r
       }))
     }),
     catchError((err) => {
-      console.error("Refresh failed:", err);
-      authService.logOut();
-      dialog.closeAll();
-      router.navigate(['/login']);
+      if(err.status != 400){
+        console.error("Refresh failed:", err);
+        authService.logOut();
+        dialog.closeAll();
+        router.navigate(['/login']);
+      }else{
+        console.log('Missing Booking Data!');
+        authService.logOut();
+        dialog.closeAll(); 
+      }
       return throwError(() => err);
     })
   )
