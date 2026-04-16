@@ -90,6 +90,7 @@ export class CabinDetailsComponent implements OnInit{
   console(){
     console.log(this.cabin?.id);
     console.log(this.cabinServices.searchInputs());
+    console.log(this.cabinServices.currentCabin);
   }
 
 }

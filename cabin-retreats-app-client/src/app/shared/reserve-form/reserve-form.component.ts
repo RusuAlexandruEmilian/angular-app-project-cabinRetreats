@@ -3,7 +3,7 @@ import { Cabin } from '../../core/models/cabin';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CabinService } from '../../core/services/cabin.service';
 
 @Component({
@@ -17,6 +17,7 @@ export class ReserveFormComponent {
   private cabinService = inject(CabinService);
   private http = inject(HttpClient);
   private dialogRef = inject(DialogRef);
+  private router = inject(Router);
   cabin!: Cabin | null;
   searchInputs!: any | null;
   numberOfNights!: number;
@@ -28,23 +29,24 @@ export class ReserveFormComponent {
   //inputWarning!: string;
   //showInputWarning!: string;
   showSuccesMessage: boolean = false;
+  showReserveForm: boolean = true;
   //showUserExistsWarning: boolean = false;
   //showWrongEmailPasswordWarning: boolean = false;
   //showInputWarning_forExistingUserForm!: string;
   
 
-  bookFormNewUser = new FormGroup({
-    name: new FormControl(''),
-    surname: new FormControl(''),
-    email: new FormControl(''),
-    password: new FormControl('')
-  });
+  // bookFormNewUser = new FormGroup({
+  //   name: new FormControl(''),
+  //   surname: new FormControl(''),
+  //   email: new FormControl(''),
+  //   password: new FormControl('')
+  // });
 
 
-  bookFormExistingUser = new FormGroup({
-    email: new FormControl(''),
-    password: new FormControl('')
-  })
+  // bookFormExistingUser = new FormGroup({
+  //   email: new FormControl(''),
+  //   password: new FormControl('')
+  // })
 
   
 
@@ -77,7 +79,6 @@ export class ReserveFormComponent {
   }
 
   bookCabin(){
-    console.log(this.cabinService.searchInputs().start_date);
     this.http.post<any>('http://localhost:3000/book',
       {
         cabin_id: this.cabinService.currentCabin?.id,
@@ -88,7 +89,15 @@ export class ReserveFormComponent {
       {
         withCredentials: true
       }
-    ).subscribe();  
+    ).subscribe({
+      next: () => {
+        this.cabin = null;
+        this.showSuccesMessage = true;    
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    });  
   }
   // bookWithNewUser(){
     
@@ -169,6 +178,13 @@ export class ReserveFormComponent {
        
   //     }
   // }
+
+  continue_button_action(){
+    this.router.navigate(['/']);
+    this.cabinService.clearSearchInputs = true;
+    this.cabinService.currentCabin = null;
+    this.closeModal();
+  }
 
   closeModal(){
     this.dialogRef.close();

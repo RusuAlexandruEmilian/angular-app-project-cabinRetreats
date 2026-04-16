@@ -341,22 +341,26 @@ app.post('/book',  verifyJwt, async (req, res) =>{
   
   const { cabin_id, booking_details } = req.body;
   const userId = req.userId;
-  if(!userId || !cabin_id || !booking_details) return res.status(400).json("Missing data required for booking!");
-  try{
-    await db.query(`Insert into bookings 
-                    (user_id, cabin_id, created_at, start_date, end_date) 
-                    Values ($1, $2, Now(), $3, $4)`,
-                    [userId, cabin_id, booking_details.check_in, booking_details.check_out]
-    );
-    res.status(200).json({message: 'Booking created successfully'})
-  } catch (err) {
-      console.error('Database Error:', err.message);
+  if(!userId || !cabin_id || !booking_details) return res.status(400).json({
+    code: 'MISSING BOOKING DATA',
+    message: 'Required booking information missing'
+  });
+  res.status(200).json({message: 'Ok!'})
+  // try{
+  //   await db.query(`Insert into bookings 
+  //                   (user_id, cabin_id, created_at, start_date, end_date) 
+  //                   Values ($1, $2, Now(), $3, $4)`,
+  //                   [userId, cabin_id, booking_details.check_in, booking_details.check_out]
+  //   );
+  //   res.status(200).json({message: 'Booking created successfully'})
+  // } catch (err) {
+  //     console.error('Database Error:', err.message);
     
-      res.status(500).json({ 
-        success: false, 
-        error: 'Database query failed' 
-      });
-  }
+  //     res.status(500).json({ 
+  //       success: false, 
+  //       error: 'Database query failed' 
+  //     });
+  // }
 
 });
 
