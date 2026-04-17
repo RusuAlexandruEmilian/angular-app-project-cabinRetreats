@@ -44,17 +44,69 @@ $cabins-retreat-web-application-theme: mat.define-theme((
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-color: #F9F6EE; }
 
 
-.reserve-dialog {
-  width: 30vw;  
-  height: 80vh; 
-}
+//Responsive design for reserve form component
 
+// X-Small devices (portrait phones, less than 576px)
 @media (max-width: 576px){
   .reserve-dialog {
-    width: 80vw;  
-    height: 80vh; 
+    width: 90vw;  
+    height: 80vh;
+    #success-message{
+      font-size: large !important;
+    }
   }
+
+  
 }
+
+
+ // Small devices (landscape phones, 576px and up)
+@media (min-width: 576px) { 
+    .reserve-dialog{
+      width: 60vw;  
+      height: 80vh;
+      
+      #success-message{
+        font-size: large !important;
+      }
+    }
+}
+
+// Medium devices (tablets, 768px and up)
+@media (min-width: 768px) {
+    .reserve-dialog{
+      width: 50vw;  
+      height: 80vh;
+      
+      #success-message{
+        font-size: x-large !important;
+      }
+    }
+}
+
+// Large devices (desktops, 992px and up)
+@media (min-width: 992px) { 
+    .reserve-dialog{
+      width: 40vw;  
+      height: 80vh; 
+    }
+}
+
+// X-Large devices (large desktops, 1200px and up)
+@media (min-width: 1200px) { 
+    .reserve-dialog{
+      width: 35vw;  
+      height: 80vh; 
+    }
+ }
+
+// XX-Large devices (larger desktops, 1400px and up)
+@media (min-width: 1400px) { 
+    .reserve-dialog{
+      width: 30vw;  
+      height: 80vh; 
+    }
+ }
 
 .cdk-global-overlay-wrapper{
   overflow: auto;
