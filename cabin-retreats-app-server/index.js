@@ -345,24 +345,46 @@ app.post('/book',  verifyJwt, async (req, res) =>{
     code: 'MISSING BOOKING DATA',
     message: 'Required booking information missing'
   });
+  // try{
+  //   await db.query(`Insert into bookings 
+  //                   (user_id, cabin_id, created_at, start_date, end_date) 
+  //                   Values ($1, $2, Now(), $3, $4)`,
+  //                   [userId, cabin_id, booking_details.check_in, booking_details.check_out]
+  //   );
+  //   res.status(200).json({message: 'Booking created successfully'})
+  // } catch (err) {
+  //     console.error('Database Error:', err.message);
+    
+  //     res.status(500).json({ 
+  //       success: false, 
+  //       error: 'Database query failed' 
+  //     });
+  // }
+
+});
+
+
+
+//Get reviews for cabin by cabin_id
+app.get('/cabin/reviews', async (req, res) => {
+  const {cabin_id} = req.query;
   try{
-    await db.query(`Insert into bookings 
-                    (user_id, cabin_id, created_at, start_date, end_date) 
-                    Values ($1, $2, Now(), $3, $4)`,
-                    [userId, cabin_id, booking_details.check_in, booking_details.check_out]
-    );
-    res.status(200).json({message: 'Booking created successfully'})
-  } catch (err) {
+      const reviews = await db.query('Select * from reviews where cabin_id=$1', [cabin_id]);
+      res.send(reviews.rows);
+    } catch (err) {
       console.error('Database Error:', err.message);
     
       res.status(500).json({ 
         success: false, 
         error: 'Database query failed' 
       });
-  }
-
+    }
+      
+    
+ 
+    
+   
 });
-
 
 app.get('/search/user/name', async (req, res) =>{
   const {user_id} = req.query
