@@ -24,6 +24,9 @@
       "dom"
     ]
   },
+  "references": [
+    { "path": "./tsconfig.spec.json" }
+  ],
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,

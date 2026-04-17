@@ -2,7 +2,10 @@ const jwt = require('jsonwebtoken');
 
 const verifyJwt = async (req, res, next) => {
     const authHeader = req.headers['authorization'];
-    if(!authHeader) return res.sendStatus(400);
+    if(!authHeader) return res.status(400).json({
+        code: 'UNAUTHORIZED ACCESS',
+        message: 'User is not logged in'
+    });
     
     const bearerToken = authHeader.split(' ')[1];
     

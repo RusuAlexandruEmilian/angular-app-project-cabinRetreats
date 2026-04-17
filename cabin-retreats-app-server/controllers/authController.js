@@ -19,14 +19,14 @@ const login = async (req, res) => {
       const accessToken = jwt.sign(
         {"userId": userFound.rows[0].id}, 
         process.env.ACCESS_TOKEN_SECRET, 
-        {expiresIn: '30s'}
+        {expiresIn: '10s'}
       );
 
       
        const refreshToken = jwt.sign(
         {"userId": userFound.rows[0].id},
         process.env.REFRESH_TOKEN_SECRET,
-        {expiresIn: '60s'}
+        {expiresIn: '40s'}
        );
       
        await pool.query('Insert into rjwt (user_id, refresh_token, created_at) Values ($1, $2, NOW())', [userFound.rows[0].id, refreshToken]);
@@ -35,7 +35,7 @@ const login = async (req, res) => {
         httpOnly: true,
         sameSite: 'lax',
         secure: false,
-        maxAge: 60*1000,  
+        maxAge: 40*1000,  
         path: '/'
       })
       

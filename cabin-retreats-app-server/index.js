@@ -341,7 +341,10 @@ app.post('/book',  verifyJwt, async (req, res) =>{
   
   const { cabin_id, booking_details } = req.body;
   const userId = req.userId;
-  if(!userId || !cabin_id || !booking_details) return res.status(400).json("Missing data required for booking!");
+  if(!userId || !cabin_id || !booking_details) return res.status(400).json({
+    code: 'MISSING BOOKING DATA',
+    message: 'Required booking information missing'
+  });
   try{
     await db.query(`Insert into bookings 
                     (user_id, cabin_id, created_at, start_date, end_date) 
@@ -360,57 +363,6 @@ app.post('/book',  verifyJwt, async (req, res) =>{
 
 });
 
-
-
-//Create booking for Existing User
-
-app.post('/create/booking/existingUser', (req, res) => {
-  const {email, password, booking} = req.body;
-
-  sql`
-  SELECT * FROM users WHERE email = ${email}
-  `
-  .then(existingUser => {
-    
-    if(existingUser.length > 0){
-      
-      bcrypt.compare(password, existingUser[0].password, (err, match) => {
-        if (err) {
-          return res.status(500).json({ message: 'Error comparing passwords' });
-        }
-
-        if(match){
-          createBooking(existingUser[0].id, booking);
-        }else{
-          res.json({message: "Wrong email or password"});
-        }
-        
-      });
-      
-    }else{
-      res.json({message: "Wrong email or password"})
-    }
-  })
-  .catch(err => {
-    console.error(err);
-    res.status(500).send('Database query failed');
-  })
-
-
-
-  function createBooking(userId, booking){
-    sql`
-    INSERT INTO bookings (user_id, cabin_id, created_at, start_date, end_date) VALUES (${userId}, ${booking.cabin_id}, NOW(), ${booking.start_date}, ${booking.end_date})
-    `
-    .then(result =>{
-      res.json({message: "Booking created successfully"});
-    })
-    .catch(err => {
-      console.error(err);
-      res.status(500).send('Database query failed');
-    })
-  }
-});
 
 
 //Get reviews for cabin by cabin_id
