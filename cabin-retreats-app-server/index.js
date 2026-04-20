@@ -32,7 +32,6 @@ app.use('/refreshToken', require('./routes/refresh'));
 app.use('/logout', require('./routes/logout'));
 
 app.get('/', async (req, res) => {
-    /*
     try{
       const allCabins = await db.query('Select * from cabin');
       res.send(allCabins.rows);
@@ -44,8 +43,8 @@ app.get('/', async (req, res) => {
         error: 'Database query failed' 
       });
     }
-      */
-     res.json(cabinsDb);
+      
+     //res.json(cabinsDb);
 });
 
 app.get('/protected', verifyJwt, (req, res) => {
@@ -462,7 +461,6 @@ app.post('/create/review', verifyJwt, async(req, res) => {
       const booking_review_check = await db.query(check_booking_and_review_sql, [userId, cabinId]);
       if(booking_review_check.rows[0].status === 'BOOKING FOUND NO REVIEW'){
         createReview(userId, cabinId, review, rating); 
-        res.status(200).json({message: booking_review_check.rows[0].status});
       }else{
         res.status(200).json({message: booking_review_check.rows[0].status});
       }
@@ -519,14 +517,25 @@ app.post('/create/review', verifyJwt, async(req, res) => {
 
 
   async function createReview(userId, cabinId, review, rating){
-      console.log(`${userId} ${cabinId} ${review} ${rating}`);
+      //console.log(`${userId} ${cabinId} ${review} ${rating}`);
     const create_review_sql = 
       `
       INSERT INTO reviews (user_id, cabin_id, created_at, review, rating) VALUES ($1, $2, NOW(), $3, $4)
       `
     try{
-      const create_review = await db.query(check_booking_and_review_sql, [userId, cabinId, review, rating]);
-      console.log(create_review.rows);
+      await db.query(create_review_sql, [userId, cabinId, review, rating]);
+      const reviews = await db.query('SELECT * FROM reviews WHERE cabin_id = $1', [cabinId]);
+      let ratingsSum = 0;
+      let cabinRating;
+      for(let i = 0; i < reviews.rows.length; i++){
+          ratingsSum = ratingsSum + parseInt(reviews.rows[i].rating);
+      };
+      cabinRating = ratingsSum / reviews.rows.length;
+      console.log(`${ratingsSum}, ${cabinRating}`);
+
+      await db.query('UPDATE cabin SET rating = $1 WHERE id = $2', [cabinRating, cabinId]);
+
+      res.status(200).json({message: 'REVIEW CREATED'});
     } catch (err) {
       console.error('Database Error:', err.message);
     

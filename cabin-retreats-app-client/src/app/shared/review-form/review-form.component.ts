@@ -65,6 +65,12 @@ export class ReviewFormComponent {
               this.submitMessage = "You haven't made a booking for this location yet";
               this.submitMessageImg = "assets/icons/exclamation.png";
               this.submitMessageRed = true;
+            }else if(message.message === "REVIEW CREATED"){
+              this.showSubmitMessage = true;
+              this.showReviewForm = false;
+              this.submitMessage = "Review created successfully";
+              this.submitMessageImg = "assets/icons/check.png";
+              this.submitMessageRed = false;
             }
           }
         );
