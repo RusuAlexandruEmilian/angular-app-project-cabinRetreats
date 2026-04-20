@@ -404,122 +404,174 @@ app.get('/search/user/name', async (req, res) =>{
 
 //Create a review
 
-app.post('/create/review', (req, res) => {
+app.post('/create/review', verifyJwt, async(req, res) => {
 
-  const {email, password, cabin_id, review, rating} = req.body;
+  const {cabinId, review, rating} = req.body;
+  const userId = req.userId;
   
-  sql`
-  SELECT * FROM users WHERE email = ${email}
-  `
-  .then(user => {
-    if(user.length > 0){
+  // sql`
+  // SELECT * FROM users WHERE email = ${email}
+  // `
+  // .then(user => {
+  //   if(user.length > 0){
       
-        bcrypt.compare(password, user[0].password, (err, match) => {
-          if (err) {
-            return res.status(500).json({ message: 'Error comparing passwords' });
-          }
+  //       bcrypt.compare(password, user[0].password, (err, match) => {
+  //         if (err) {
+  //           return res.status(500).json({ message: 'Error comparing passwords' });
+  //         }
   
-          if(match){
-            //It also creates the review by  calling the createReview function within it
-            check_booking_and_review(user[0].id);
-          }else{
-            res.json({message: "Wrong email or password"});
-          }
+  //         if(match){
+  //           //It also creates the review by  calling the createReview function within it
+  //           check_booking_and_review(user[0].id);
+  //         }else{
+  //           res.json({message: "Wrong email or password"});
+  //         }
           
-        });
-      }else{
-        res.json({message: "Wrong email or password"});
-      }
-  })
-  .catch(err => {
-    console.error(err);
-    res.status(500).send('Database query failed');
-  })
+  //       });
+  //     }else{
+  //       res.json({message: "Wrong email or password"});
+  //     }
+  // })
+  // .catch(err => {
+  //   console.error(err);
+  //   res.status(500).send('Database query failed');
+  // })
 
-
-  function check_booking_and_review(user_id){
-    
-    sql`
+  
+  const check_booking_and_review_sql = 
+  `
     SELECT 
-    b.user_id,
-    b.cabin_id,
     CASE 
-        WHEN b.user_id IS NOT NULL AND r.user_id IS NOT NULL THEN 'Booking and Review Found'
-        WHEN b.user_id IS NOT NULL AND r.user_id IS NULL THEN 'Booking Found, No Review'
-        ELSE 'No Booking Found'
-    END AS status
-    FROM 
-        bookings b
-    LEFT JOIN 
-        reviews r 
-        ON b.user_id = r.user_id 
-        AND b.cabin_id = r.cabin_id
-    WHERE 
-        b.user_id = ${user_id}   
-        AND b.cabin_id = ${cabin_id}
+        WHEN EXISTS (
+            SELECT 1 FROM bookings b 
+            LEFT JOIN reviews r ON b.user_id = r.user_id AND b.cabin_id = r.cabin_id
+            WHERE b.user_id = $1 AND b.cabin_id = $2 AND r.user_id IS NOT NULL
+        ) THEN 'BOOKING AND REVIEW FOUND'
+        
+        WHEN EXISTS (
+            SELECT 1 FROM bookings b 
+            WHERE b.user_id = $1 AND b.cabin_id = $2
+        ) THEN 'BOOKING FOUND NO REVIEW'
+        
+        ELSE 'NO BOOKING FOUND'
+    END AS status;
     `
-    .then(result => {
-      if(result.length > 0){
-        if(result[0].status === "Booking and Review Found"){
-          res.json({message: "Booking and Review Found"});
-        }else{
-          createReview(user_id);
-        }
+    ;
+  
+  try{
+      const booking_review_check = await db.query(check_booking_and_review_sql, [userId, cabinId]);
+      if(booking_review_check.rows[0].status === 'BOOKING FOUND NO REVIEW'){
+        createReview(userId, cabinId, review, rating); 
+        res.status(200).json({message: booking_review_check.rows[0].status});
       }else{
-        res.json({message: "Booking not found"});
+        res.status(200).json({message: booking_review_check.rows[0].status});
       }
       
-    })
-    .catch(err => {
-      console.error(err);
-      res.status(500).send('Database query failed');
-    })
-  }
-
-
-
-  function createReview(user_id){
+    } catch (err) {
+      console.error('Database Error:', err.message);
+    
+      res.status(500).json({ 
+        success: false, 
+        error: 'Database query failed' 
+      });
+    }
   
-    sql`
-    INSERT INTO reviews (user_id, cabin_id, created_at, review, rating) VALUES (${user_id}, ${cabin_id}, NOW(), ${review}, ${rating})
-    `
-    .then(success => {
-      sql`
-      SELECT * FROM reviews WHERE cabin_id = ${cabin_id}
-      `
-      .then(reviews => {
-        
-        let ratingsSum = 0;
-        let cabinRating;
-        for(let j = 0; j < reviews.length; j++){
-          ratingsSum = ratingsSum + parseInt(reviews[j].rating);
-        };
-        cabinRating = ratingsSum / reviews.length;
-        console.log(cabinRating);
-        
-      sql`
-      UPDATE cabin SET rating = ${cabinRating} WHERE id = ${cabin_id} 
-      `
-      .then(ratingUpdated => {
-        
-        res.json({message: "Review created successfully"})
-      })
-      .catch(err => {
-        console.error(err);
-        res.status(500).send('Database query failed');
-      })
-      })
-      .catch(err => {
-        console.error(err);
-        res.status(500).send('Database query failed');
-      })
+  
+  // function check_booking_and_review(user_id){
+    
+  //   sql`
+  //   SELECT 
+  //   b.user_id,
+  //   b.cabin_id,
+  //   CASE 
+  //       WHEN b.user_id IS NOT NULL AND r.user_id IS NOT NULL THEN 'Booking and Review Found'
+  //       WHEN b.user_id IS NOT NULL AND r.user_id IS NULL THEN 'Booking Found, No Review'
+  //       ELSE 'No Booking Found'
+  //   END AS status
+  //   FROM 
+  //       bookings b
+  //   LEFT JOIN 
+  //       reviews r 
+  //       ON b.user_id = r.user_id 
+  //       AND b.cabin_id = r.cabin_id
+  //   WHERE 
+  //       b.user_id = ${user_id}   
+  //       AND b.cabin_id = ${cabin_id}
+  //   `
+  //   .then(result => {
+  //     if(result.length > 0){
+  //       if(result[0].status === "Booking and Review Found"){
+  //         res.json({message: "Booking and Review Found"});
+  //       }else{
+  //         createReview(user_id);
+  //       }
+  //     }else{
+  //       res.json({message: "Booking not found"});
+  //     }
+      
+  //   })
+  //   .catch(err => {
+  //     console.error(err);
+  //     res.status(500).send('Database query failed');
+  //   })
+  // }
 
-    })
-    .catch(err => {
-      console.error(err);
-      res.status(500).send('Database query failed');
-    })
-  }
+
+
+  async function createReview(userId, cabinId, review, rating){
+      console.log(`${userId} ${cabinId} ${review} ${rating}`);
+    const create_review_sql = 
+      `
+      INSERT INTO reviews (user_id, cabin_id, created_at, review, rating) VALUES ($1, $2, NOW(), $3, $4)
+      `
+    try{
+      const create_review = await db.query(check_booking_and_review_sql, [userId, cabinId, review, rating]);
+      console.log(create_review.rows);
+    } catch (err) {
+      console.error('Database Error:', err.message);
+    
+      res.status(500).json({ 
+        success: false, 
+        error: 'Database query failed' 
+      });
+    }
+  //   .then(success => {
+  //     sql`
+  //     SELECT * FROM reviews WHERE cabin_id = ${cabin_id}
+  //     `
+  //     .then(reviews => {
+        
+  //       let ratingsSum = 0;
+  //       let cabinRating;
+  //       for(let j = 0; j < reviews.length; j++){
+  //         ratingsSum = ratingsSum + parseInt(reviews[j].rating);
+  //       };
+  //       cabinRating = ratingsSum / reviews.length;
+  //       console.log(cabinRating);
+        
+  //     sql`
+  //     UPDATE cabin SET rating = ${cabinRating} WHERE id = ${cabin_id} 
+  //     `
+  //     .then(ratingUpdated => {
+        
+  //       res.json({message: "Review created successfully"})
+  //     })
+  //     .catch(err => {
+  //       console.error(err);
+  //       res.status(500).send('Database query failed');
+  //     })
+  //     })
+  //     .catch(err => {
+  //       console.error(err);
+  //       res.status(500).send('Database query failed');
+  //     })
+
+  //   })
+  //   .catch(err => {
+  //     console.error(err);
+  //     res.status(500).send('Database query failed');
+  //   })
+    }
 });
 
 

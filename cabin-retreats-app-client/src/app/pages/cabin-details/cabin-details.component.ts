@@ -78,13 +78,13 @@ export class CabinDetailsComponent implements OnInit{
 
   protected openReviewForm(){
 
-    // this.cabin$.subscribe(cabinDetails => {
-    //   this.dialog.open(ReviewFormComponent, { autoFocus: false, disableClose: true, data: cabinDetails});
-    // })
     
-    // this.dialog.afterAllClosed.subscribe(() => {
-    //   this.getReviews();
-    // });
+    this.dialog.open(ReviewFormComponent, { autoFocus: false, disableClose: true });
+    
+    
+    this.dialog.afterAllClosed.subscribe(() => {
+      this.getReviews();
+    });
   }
   
   console(){
