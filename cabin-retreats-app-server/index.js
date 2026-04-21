@@ -32,19 +32,19 @@ app.use('/refreshToken', require('./routes/refresh'));
 app.use('/logout', require('./routes/logout'));
 
 app.get('/', async (req, res) => {
-    try{
-      const allCabins = await db.query('Select * from cabin');
-      res.send(allCabins.rows);
-    } catch (err) {
-      console.error('Database Error:', err.message);
+    // try{
+    //   const allCabins = await db.query('Select * from cabin');
+    //   res.send(allCabins.rows);
+    // } catch (err) {
+    //   console.error('Database Error:', err.message);
     
-      res.status(500).json({ 
-        success: false, 
-        error: 'Database query failed' 
-      });
-    }
+    //   res.status(500).json({ 
+    //     success: false, 
+    //     error: 'Database query failed' 
+    //   });
+    // }
       
-     //res.json(cabinsDb);
+     res.json(cabinsDb);
 });
 
 app.get('/protected', verifyJwt, (req, res) => {

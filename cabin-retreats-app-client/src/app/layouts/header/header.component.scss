@@ -36,6 +36,50 @@ img{
     padding: 10px;
 }
 
+.auth-btn{
+    all: unset;
+    color: white;
+    background-color: #5e9b21;
+    border: none;
+    padding: 8px 15px 8px 15px;
+    border-radius: 5px;
+    font-size: small;
+    font-weight: 400;
+    align-self: center;
+}
+
+.auth-btn:active{
+    transform: scale(0.98);
+}
+
+.auth-btn:hover{
+    cursor: pointer;
+    background-color: #50811e;
+}
+
+#user-name{
+    color: white;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    font-size: medium;
+}
+
+//User avatar icon styles
+#user-avatar{
+    background-color: #5e9b21;
+    padding: 8px;
+    border-radius: 50%;
+    color: white;
+    font-size: large;
+    font-weight: 400;
+}
+
+#user-avatar:hover{
+    cursor: pointer;
+    background-color: #50811e;
+}
+
 @media (max-width: 840px){
     img{
         width: 140px;
