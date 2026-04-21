@@ -46,6 +46,26 @@ export const httpInterceptor: HttpInterceptorFn = (req: any, next: any) => {
         }
         
       }
+
+      if(error.status === 400 && req.url.includes('/create/review')){
+        const errorCode = error.error.code;
+        if(errorCode === 'UNAUTHORIZED ACCESS'){
+          console.warn("Not logged in!");
+          const currentUrl = router.url
+          router.navigate(['/login'], {
+          state: { returnUrl: currentUrl }
+          });
+          dialog.closeAll();
+          return throwError(() => error)
+        }
+
+        // if(errorCode === 'MISSING BOOKING DATA'){
+        //   console.log('Missing Booking Data!');
+        //   authService.logOut();
+        //   dialog.closeAll();
+        // }
+        
+      }
       return throwError(() => error);
     })
 
