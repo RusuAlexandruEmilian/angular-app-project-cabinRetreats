@@ -78,9 +78,7 @@ export class CabinDetailsComponent implements OnInit{
 
   protected openReviewForm(){
 
-    
     this.dialog.open(ReviewFormComponent, { autoFocus: false, disableClose: true });
-    
     
     this.dialog.afterAllClosed.subscribe(() => {
       this.getReviews();

@@ -54,7 +54,7 @@ app.get('/search/cabinId', async (req, res) => {
   const { cabin_id } = req.query;
   try{
       const cabin = await db.query('Select * from cabin WHERE id = $1', [cabin_id]);
-      res.send(cabin.rows);
+      res.send(cabin.rows[0]);
     } catch (err) {
       console.error('Database Error:', err.message);
     

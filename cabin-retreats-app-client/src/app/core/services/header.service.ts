@@ -10,6 +10,7 @@ export class HeaderService {
 
   refreshHomePage(){
     this.cabinService.clearSearchInputs = true;
+    this.cabinService.currentCabin = null;
     this.cabinService.getAllCabins();
   }
 }

@@ -1,5 +1,5 @@
 export interface Cabin {
-    id:Number,
+    id:number,
     name:String,
     location:String,
     description:String,

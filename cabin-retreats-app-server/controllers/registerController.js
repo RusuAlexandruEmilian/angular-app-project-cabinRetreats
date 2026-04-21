@@ -12,7 +12,6 @@ const register = async (req, res) => {
 
   try{
     const duplicate = await pool.query('Select email from users where email=$1', [email]);
-  
     if (duplicate.rows.length > 0){
       return res.sendStatus(409);
     }
