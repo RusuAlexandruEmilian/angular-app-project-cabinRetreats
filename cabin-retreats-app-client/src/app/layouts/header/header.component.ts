@@ -4,6 +4,7 @@ import { Router, RouterLink, RouterModule } from '@angular/router';
 import { HeaderService } from '../../core/services/header.service';
 import { AuthenticationService } from '../../core/services/authentication.service';
 import { HttpClient } from '@angular/common/http';
+import { UserDataService } from '../../core/services/user-data.service';
 
 
 
@@ -19,8 +20,13 @@ export class HeaderComponent {
   public router = inject(Router);
   public authServices = inject(AuthenticationService);
   public http = inject(HttpClient);
-
-  
+  private userService = inject(UserDataService);
+  getUserId(){
+    this.userService.decode_get_user_id();
+    this.userService.getUserData();
+    console.log(this.userService.userId);
+    console.log(this.userService.userData);
+  }
   
   
 }

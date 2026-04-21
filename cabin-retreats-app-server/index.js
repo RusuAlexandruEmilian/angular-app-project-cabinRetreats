@@ -583,6 +583,21 @@ app.post('/create/review', verifyJwt, async(req, res) => {
     }
 });
 
+app.get('/user/byId', async(req, res) => {
+  const {userId} = req.query
+   try{
+      const user = await db.query('SELECT name, surname, email FROM users WHERE id = $1', [userId]);
+      res.send(user.rows[0]);
+    } catch (err) {
+      console.error('Database Error:', err.message);
+    
+      res.status(500).json({ 
+        success: false, 
+        error: 'Database query failed' 
+      });
+    }
+});
+
 
 const PORT = process.env.PORT || 3000;
 

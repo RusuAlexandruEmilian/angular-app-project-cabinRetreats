@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { CabinService } from './cabin.service';
 import { Router } from '@angular/router';
 import { map, Observable, catchError, of } from 'rxjs';
@@ -12,6 +12,7 @@ export class AuthenticationService {
   private cabinService = inject(CabinService);
   private token: { accessToken: string } | null = null;
   private router = inject(Router);
+  authenticated = signal<boolean>(false);
 
   public getAuthenticationInfo(){
     return this.token?.accessToken;
@@ -37,6 +38,7 @@ export class AuthenticationService {
         map(data => {
           this.setAuthenticationInfo(data);
           this.router.navigateByUrl(returnUrl);
+          this.authenticated.set(true);
           return true;
         }),
 
@@ -74,6 +76,7 @@ export class AuthenticationService {
     this.token = null;
     this.cabinService.clearSearchInputs = true;
     this.cabinService.searchInputs.set({});
+    this.authenticated.set(false);
     this.router.navigate(['/']);
   }
 
