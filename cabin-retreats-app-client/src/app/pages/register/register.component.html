@@ -1,26 +1,36 @@
 <div class="page-layout">
     <nav><img class="navbar-logo" src="assets/images/cabin-retreats-edited.png" alt="brand image"></nav>
     <div class='register-form-container'>
-        <!-- <form class="register-form" (submit)="onSubmit()">
-            <div class="form-elements form-title">Register</div>
-            @if(duplicateEmail){
-                <div class="duplicate-email-warning-container">
-                    <img src="assets/icons/exclamation.png" id="warning-icon">
-                    <div id="duplicate-email-warning">User already registered</div>
-                </div>
-            }
-            <input class="form-elements inputs" type="text" id="firstName" name="firstName" placeholder="First name" [formControl]="firstName">
-            <input class="form-elements inputs" type="text" id="lastName" name="lastName" placeholder="Last name" [formControl]="lastName">
-            <input class="form-elements inputs" id="email" name="email" type="email" placeholder="Email" [formControl]="email">
-            @if(email.invalid && email.touched){
-                <div id="email-warning">
-                    Please enter a valid email address
-                </div>
-            }
-            <input class="form-elements inputs" id="password" name="password" type="password" placeholder="Password" [formControl]="pwd">
-            <button class="form-elements" type="submit" [disabled]="email.invalid || pwd.invalid">Register</button>
-            <div id="form-footer">Already have an account? <span id="route-to-login" routerLink="/login">Login</span></div> 
-        </form> -->
+        @if(showSuccessMessage){
+            <div class="success-message-container">
+                <div id="success-message">&#x2714; User created successfully</div>
+                <a class="route-option" routerLink="/login">Login</a>
+                <a class="route-option" routerLink="/">Home</a>
+            </div>
+        }
+        
+        @if(showRegisterForm){
+            <form class="register-form" (submit)="onSubmit()">
+                <div class="form-elements form-title">Register</div>
+                @if(duplicateEmail){
+                    <div class="duplicate-email-warning-container">
+                        <img src="assets/icons/exclamation.png" id="warning-icon">
+                        <div id="duplicate-email-warning">User already registered</div>
+                    </div>
+                }
+                <input class="form-elements inputs" type="text" id="firstName" name="firstName" placeholder="First name" [formControl]="firstName">
+                <input class="form-elements inputs" type="text" id="lastName" name="lastName" placeholder="Last name" [formControl]="lastName">
+                <input class="form-elements inputs" id="email" name="email" type="email" placeholder="Email" [formControl]="email">
+                @if(email.invalid && email.touched){
+                    <div id="email-warning">
+                        Please enter a valid email address
+                    </div>
+                }
+                <input class="form-elements inputs" id="password" name="password" type="password" placeholder="Password" [formControl]="pwd">
+                <button class="form-elements" type="submit" [disabled]="email.invalid || pwd.invalid">Register</button>
+                <div id="form-footer">Already have an account? <span id="route-to-login" routerLink="/login">Login</span></div> 
+            </form>
+        }
     </div>
 </div>
 

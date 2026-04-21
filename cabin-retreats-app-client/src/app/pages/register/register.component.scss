@@ -125,11 +125,57 @@ button:hover{
 }
 
 
+//Styles for succes message window
+.success-message-container{
+    width: 30%;
+    min-height: 80vh;
+    height: auto;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0px 0px 6px 3px grey;
+    display: flex;
+    flex-direction: column;
+    padding: 50px;
+    box-sizing: border-box;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+#success-message{
+    color: #69b41e;
+    font-weight: 600;
+    font-size: large;
+    text-align: center;
+}
+
+a{
+    all: unset;
+}
+
+.route-option{
+    color: white;
+    background-color: #69b41e;
+    border: none;
+    padding: 15px 50px 15px 50px;
+    border-radius: 5px;
+    font-size: 15px;
+    margin-top: 0;
+}
+
+.route-option:active{
+    transform: scale(0.98);
+}
+
+.route-option:hover{
+    cursor: pointer;
+    background-color: #5e9924;
+}
 
 
  // X-Small devices (portrait phones, less than 576px)
  @media (max-width: 576px) {
-    .login-form{
+    .login-form, .success-message-container{
         width: 100%;
         box-shadow: none;
         border-radius: 0;
@@ -137,7 +183,7 @@ button:hover{
  }
 
  @media (max-height: 580px){
-    .login-form{
+    .login-form, .success-message-container{
         width: 100%;
         box-shadow: none;
         border-radius: 0;
@@ -146,35 +192,35 @@ button:hover{
 
  // Small devices (landscape phones, 576px and up)
 @media (min-width: 576px) { 
-    .login-form{
+    .login-form, .success-message-container{
         width: 70%;
     }
 }
 
 // Medium devices (tablets, 768px and up)
 @media (min-width: 768px) {
-    .login-form{
+    .login-form, .success-message-container{
         width: 55%;
     }
 }
 
 // Large devices (desktops, 992px and up)
 @media (min-width: 992px) { 
-    .login-form{
+    .login-form, .success-message-container{
         width: 40%;
     }
 }
 
 // X-Large devices (large desktops, 1200px and up)
 @media (min-width: 1200px) { 
-    .login-form{
+    .login-form, .success-message-container{
         width: 35%;
     }
  }
 
 // XX-Large devices (larger desktops, 1400px and up)
 @media (min-width: 1400px) { 
-    .login-form{
+    .login-form, .success-message-container{
         width: 30%;
     }
  }

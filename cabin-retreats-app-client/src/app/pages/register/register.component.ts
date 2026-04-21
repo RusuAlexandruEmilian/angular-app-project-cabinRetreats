@@ -16,6 +16,8 @@ private http = inject(HttpClient);
   private authService = inject(AuthenticationService);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
+  showSuccessMessage: boolean = false;
+  showRegisterForm: boolean = true;
 
   duplicateEmail: boolean = false;
   firstName = new FormControl('', {
@@ -32,15 +34,6 @@ private http = inject(HttpClient);
     validators: [Validators.required],
   });
 
-  private returnUrl: string = '/';
-
-  constructor() {
-    const navigation = this.router.getCurrentNavigation();
-    if (navigation?.extras.state) {
-      this.returnUrl = navigation.extras.state['returnUrl'];
-    }
-  }
-
   onSubmit(){
     this.http.post<any>('http://localhost:3000/register', {
         email: this.email.value,
@@ -53,7 +46,8 @@ private http = inject(HttpClient);
       }
     ).subscribe({
         next: (data) => {
-          this.router.navigate(['/']);
+          this.showSuccessMessage = true;
+          this.showRegisterForm = false;
         },
         error: (err) => {
           if(err.status === 409){
@@ -66,11 +60,4 @@ private http = inject(HttpClient);
     });
   }
   
-  getInputs(){
-    console.log(`email: ${this.email}` + '\n' + `passwod: ${this.pwd}`);
-  }
-
-  console(){
-    console.log(`${this.email.value}, ${this.pwd.value}`);
-  }
 }
