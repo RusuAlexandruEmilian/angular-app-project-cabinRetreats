@@ -1,7 +1,7 @@
 <div class="header">
     <div class="auth-buttons-container">
         <button routerLink="login" class="auth-btn">Login</button>
-        <button class="auth-btn">Register</button>
+        <button routerLink="register" class="auth-btn">Register</button>
         <button (click)="authServices.logOut()" class="auth-btn">Logout</button>
     </div>
     <div id="logo-container" routerLink="" (click)="this.headerService.refreshHomePage()"><img src="assets/images/cabin-retreats-edited.png" alt="brand image"></div>
