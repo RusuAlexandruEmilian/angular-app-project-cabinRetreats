@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { CabinService } from './cabin.service';
 import { Router } from '@angular/router';
 import { map, Observable, catchError, of } from 'rxjs';
+
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,7 @@ export class AuthenticationService {
   private cabinService = inject(CabinService);
   private token: { accessToken: string } | null = null;
   private router = inject(Router);
+  authenticated = signal<boolean>(false);
 
   public getAuthenticationInfo(){
     return this.token?.accessToken;
@@ -37,36 +39,19 @@ export class AuthenticationService {
         map(data => {
           this.setAuthenticationInfo(data);
           this.router.navigateByUrl(returnUrl);
+          this.authenticated.set(true);
           return true;
         }),
 
         catchError(err => {
           if((err.status === 401) || (err.status === 404)){
-            //this.wrongCredentials = true;
             return of(false);
           }else{
             console.log(err);
             return of(false);
           }
         })
-      //{
-      // next: (data) => {
-      //     this.setAuthenticationInfo(data);
-      //     this.router.navigateByUrl(returnUrl);
-      //     return false;
-      //   },
-      //   error: (err) => {
-      //     if((err.status === 401) || (err.status === 404)){
-      //       //this.wrongCredentials = true;
-      //       console.log('Wrong Password!');
-      //       return true;
-      //     }else{
-      //       console.log(err);
-      //       return true;
-      //     }
-      //   }
-  //  }
-  )
+    )
   }
 
   public logOut(){
@@ -74,6 +59,7 @@ export class AuthenticationService {
     this.token = null;
     this.cabinService.clearSearchInputs = true;
     this.cabinService.searchInputs.set({});
+    this.authenticated.set(false);
     this.router.navigate(['/']);
   }
 

@@ -56,7 +56,6 @@ export class LoginComponent {
     //     }
     // });
     this.authService.login(this.email.value, this.pwd.value, this.returnUrl).subscribe(logged_in => {
-      console.log(logged_in);
       if(!logged_in){
         this.wrongCredentials = true;
       }

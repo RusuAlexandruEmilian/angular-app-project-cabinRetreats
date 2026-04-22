@@ -1,9 +1,10 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, effect, inject } from '@angular/core';
 import { SearchAvailableCabinsFormComponent } from '../../shared/search-available-cabins-form/search-available-cabins-form.component';
 import { Router, RouterLink, RouterModule } from '@angular/router';
 import { HeaderService } from '../../core/services/header.service';
 import { AuthenticationService } from '../../core/services/authentication.service';
 import { HttpClient } from '@angular/common/http';
+import { UserDataService } from '../../core/services/user-data.service';
 
 
 
@@ -19,8 +20,12 @@ export class HeaderComponent {
   public router = inject(Router);
   public authServices = inject(AuthenticationService);
   public http = inject(HttpClient);
-
+  public userService = inject(UserDataService);
   
+
+  getUserId(){
+    
+  }
   
   
 }
