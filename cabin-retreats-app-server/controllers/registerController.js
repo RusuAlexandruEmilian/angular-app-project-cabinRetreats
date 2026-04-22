@@ -10,6 +10,7 @@ const register = async (req, res) => {
     return res.status(400).json({'message': 'All details required!'})
   };
 
+  
   try{
     const duplicate = await pool.query('Select email from users where email=$1', [email]);
     if (duplicate.rows.length > 0){
