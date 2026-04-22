@@ -1,8 +1,8 @@
 <div class="header">
     <div class="auth-buttons-container">
-    @if(authServices.authenticated()){
-        <div id="user-avatar" (click)="getUserId()">RA</div>
-        <div id="user-name">Rusu Alexandru</div>
+    @if(userService.userData()){
+        <div id="user-avatar" (click)="getUserId()">{{ userService.userData().name.charAt(0) }}{{ userService.userData().surname.charAt(0) }}</div>
+        <div id="user-name">{{ userService.userData().name }} {{ userService.userData().surname }}</div>
     }
         <button routerLink="login" class="auth-btn">Login</button>
         <button routerLink="register" class="auth-btn">Register</button>
