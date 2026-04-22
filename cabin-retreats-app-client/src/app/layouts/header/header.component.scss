@@ -65,7 +65,43 @@ img{
     font-size: medium;
 }
 
-//User avatar icon styles
+
+
+
+//User avatar styles
+.user-avatar-container{
+   position: relative;
+   display: flex;
+   align-items: center;
+   gap: .5em; 
+}
+
+.dorpdown-avatar-menu{
+    background-color: white;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    min-width: 160px;
+    margin-top: 3px;
+    border-radius: 5px;
+    text-align: center;
+    overflow: hidden;
+}
+
+.avatar-menu-option{
+    padding: 5px;
+    font-size: medium;
+}
+
+.avatar-menu-option:not(:last-child) {
+  border-bottom: 1px solid lightgray;
+}
+
+.avatar-menu-option:hover {
+  cursor: pointer;
+  background-color: #e3e3e5;
+}
+
 #user-avatar{
     background-color: #5e9b21;
     padding: 8px;
@@ -73,6 +109,14 @@ img{
     color: white;
     font-size: medium;
     font-weight: 400;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+}
+
+#user-name{
+    font-weight: 400;
+    letter-spacing: .5px;
 }
 
 #user-avatar:hover{

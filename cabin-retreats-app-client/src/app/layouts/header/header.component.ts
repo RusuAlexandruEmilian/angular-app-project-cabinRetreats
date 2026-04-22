@@ -1,4 +1,4 @@
-import { Component, OnInit, effect, inject } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, effect, inject, signal } from '@angular/core';
 import { SearchAvailableCabinsFormComponent } from '../../shared/search-available-cabins-form/search-available-cabins-form.component';
 import { Router, RouterLink, RouterModule } from '@angular/router';
 import { HeaderService } from '../../core/services/header.service';
@@ -21,11 +21,20 @@ export class HeaderComponent {
   public authServices = inject(AuthenticationService);
   public http = inject(HttpClient);
   public userService = inject(UserDataService);
-  
+  private elementRef = inject(ElementRef);
+  isDropdownMenuVisible = signal(false);
 
-  getUserId(){
-    
+  toggleDropdownMenuVisibility(event: Event){
+    event.stopPropagation();
+    this.isDropdownMenuVisible.update(state => !state);
   }
   
-  
+  @HostListener('document:click', ['$event'])
+  clickOut(event: MouseEvent) {
+    
+    if (this.isDropdownMenuVisible()) {
+      this.isDropdownMenuVisible.set(false);
+    }
+  }
+
 }
