@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { CabinService } from './cabin.service';
 import { Router } from '@angular/router';
-import { map, Observable, catchError, of } from 'rxjs';
+import { map, Observable, catchError, of, take, tap } from 'rxjs';
 
 
 @Injectable({
@@ -14,6 +14,7 @@ export class AuthenticationService {
   private token: { accessToken: string } | null = null;
   private router = inject(Router);
   authenticated = signal<boolean>(false);
+  isLoading = signal<boolean>(true);
 
   public getAuthenticationInfo(){
     return this.token?.accessToken;
@@ -65,6 +66,28 @@ export class AuthenticationService {
 
   public refreshToken(){
     return this.http.get('http://localhost:3000/refreshToken', { withCredentials: true });
+  }
+
+  public initializeLogin(){
+    if(!document.cookie.startsWith('LoggedIn=')){
+      this.isLoading.set(false);
+      return of(null);
+    }
+    
+    return this.refreshToken().pipe(
+        take(1),
+        tap((jwt: any) => {
+          this.setAuthenticationInfo(jwt);
+          this.authenticated.set(true);
+          this.isLoading.set(false);
+        }),
+        catchError((err) => {
+          console.error('Silent login on refresh failed', err);
+          this.authenticated.set(false);
+          this.isLoading.set(false);
+          return of(null);
+        }),
+    )
   }
 
   public isLogedIn():boolean {

@@ -5,7 +5,7 @@ import { SearchAvailableCabinsFormComponent } from './shared/search-available-ca
 import { HomeComponent } from './pages/home/home.component';
 import { RouterModule } from '@angular/router';
 import { AuthenticationService } from './core/services/authentication.service';
-import { switchMap, tap } from 'rxjs';
+import { switchMap, take, tap } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -17,9 +17,10 @@ import { switchMap, tap } from 'rxjs';
 export class AppComponent {
   title = 'cabins-retreat-web-application';
   router = inject(Router);
-  private authService = inject(AuthenticationService);
-
+  public authService = inject(AuthenticationService);
+  
+  
   ngOnInit(){
-    this.router.navigate(['/'])
+    this.router.navigate(['/']);
   }
 }

@@ -1,4 +1,14 @@
-@if(this.router.url !== "/login" && this.router.url !== "/register"){
+@if(this.router.url !== "/login" && this.router.url !== "/register" && !authService.isLoading()){
 <app-header/>
 }
+
+@if(authService.isLoading()){
+    <div id="preLoad-page">
+        Loading
+    </div>
+}
+
+
 <router-outlet/>
+
+
