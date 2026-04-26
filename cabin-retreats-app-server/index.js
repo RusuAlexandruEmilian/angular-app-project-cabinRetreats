@@ -50,6 +50,9 @@ app.get('/', async (req, res) => {
 app.get('/protected', verifyJwt, (req, res) => {
   res.json(cabinsDb);
 });
+app.get('/test-route', (req, res) => {
+  res.send('New endpoint working!');
+})
 app.get('/search/cabinId', async (req, res) => {
   const { cabin_id } = req.query;
   try{
