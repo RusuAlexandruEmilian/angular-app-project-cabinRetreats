@@ -5,6 +5,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
 import { CabinService } from '../../core/services/cabin.service';
+import { environment } from '../../../environments/environments';
 
 @Component({
   selector: 'app-reserve-form',
@@ -18,6 +19,7 @@ export class ReserveFormComponent {
   private http = inject(HttpClient);
   private dialogRef = inject(DialogRef);
   private router = inject(Router);
+  private apiUrl = environment.apiUrl;
   cabin!: Cabin | null;
   searchInputs!: any | null;
   numberOfNights!: number;
@@ -57,7 +59,7 @@ export class ReserveFormComponent {
   }
 
   bookCabin(){
-    this.http.post<any>('http://localhost:3000/book',
+    this.http.post<any>(`${this.apiUrl}/book`,
       {
         cabin_id: this.cabinService.currentCabin?.id,
         booking_details: {check_in: this.cabinService.searchInputs().start_date,

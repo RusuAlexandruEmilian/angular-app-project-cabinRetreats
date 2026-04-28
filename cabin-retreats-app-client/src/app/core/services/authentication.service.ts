@@ -3,6 +3,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { CabinService } from './cabin.service';
 import { Router } from '@angular/router';
 import { map, Observable, catchError, of, take, tap } from 'rxjs';
+import { environment } from '../../../environments/environments';
 
 
 @Injectable({
@@ -15,6 +16,7 @@ export class AuthenticationService {
   private router = inject(Router);
   authenticated = signal<boolean>(false);
   isLoading = signal<boolean>(true);
+  private apiUrl = environment.apiUrl;
 
   public getAuthenticationInfo(){
     return this.token?.accessToken;
@@ -29,7 +31,7 @@ export class AuthenticationService {
   }
 
   public login(email: string | null, pwd: string | null, returnUrl: string):Observable<boolean>{
-    return this.http.post<any>('http://localhost:3000/authenticate', {
+    return this.http.post<any>(`${this.apiUrl}/authenticate`, {
         email: email,
         password: pwd
       },
@@ -56,7 +58,7 @@ export class AuthenticationService {
   }
 
   public logOut(){
-    this.http.get('http://localhost:3000/logout', { withCredentials: true }).subscribe();
+    this.http.get(`${this.apiUrl}/logout`, { withCredentials: true }).subscribe();
     this.token = null;
     this.cabinService.clearSearchInputs = true;
     this.cabinService.searchInputs.set({});
@@ -65,7 +67,7 @@ export class AuthenticationService {
   }
 
   public refreshToken(){
-    return this.http.get('http://localhost:3000/refreshToken', { withCredentials: true });
+    return this.http.get(`${this.apiUrl}/refreshToken`, { withCredentials: true });
   }
 
   public initializeLogin(){

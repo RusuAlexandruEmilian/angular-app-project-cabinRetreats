@@ -7,6 +7,7 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CabinService } from '../../core/services/cabin.service';
 import { Cabin } from '../../core/models/cabin';
+import { environment } from '../../../environments/environments';
 
 @Component({
   selector: 'app-review-form',
@@ -24,6 +25,7 @@ export class ReviewFormComponent {
   private dialogRef = inject(DialogRef);
   private http = inject(HttpClient);
   private cabinService = inject(CabinService);
+  private apiUrl = environment.apiUrl;
   rating!: number;
   cabin!: Cabin | null;
   showReviewForm:boolean = true;
@@ -47,7 +49,7 @@ export class ReviewFormComponent {
   createReview(){
     if(!this.rating) this.rating = 1;
     if(this.cabin){
-      this.http.post<{message: string}>('http://localhost:3000/create/review', {
+      this.http.post<{message: string}>(`${this.apiUrl}/create/review`, {
         cabinId: this.cabin.id,
         review: this.reviewForm.value.review, 
         rating: this.rating }).subscribe(

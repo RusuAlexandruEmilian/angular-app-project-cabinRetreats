@@ -3,6 +3,7 @@ import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule, Validators, FormControl, FormsModule } from '@angular/forms';
 import { AuthenticationService } from '../../core/services/authentication.service';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { environment } from '../../../environments/environments';
 
 @Component({
   selector: 'app-register',
@@ -16,6 +17,7 @@ private http = inject(HttpClient);
   private authService = inject(AuthenticationService);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
+  private apiUrl = environment.apiUrl;
   showSuccessMessage: boolean = false;
   showRegisterForm: boolean = true;
 
@@ -35,7 +37,7 @@ private http = inject(HttpClient);
   });
 
   onSubmit(){
-    this.http.post<any>('http://localhost:3000/register', {
+    this.http.post<any>(`${this.apiUrl}/register`, {
         email: this.email.value,
         password: this.pwd.value,
         name: this.firstName.value,

@@ -4,6 +4,7 @@ import { AuthenticationService } from './authentication.service';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, switchMap } from 'rxjs';
 import { toSignal, toObservable } from '@angular/core/rxjs-interop';
+import { environment } from '../../../environments/environments';
 
 
 interface jwtUserIdPayload extends JwtPayload {
@@ -18,6 +19,7 @@ export class UserDataService {
   constructor() { }
   private http = inject(HttpClient);
   private autServices = inject(AuthenticationService);
+  private apiUrl = environment.apiUrl;
   
   readonly userId = computed(() => {
     const token = this.autServices.getAuthenticationInfo();
@@ -31,7 +33,7 @@ export class UserDataService {
     toObservable(this.userId).pipe(
       switchMap(id => {
         if(!id) return of(null);
-        return this.http.get<any>('http://localhost:3000/user/byId', { params: {userId: id} });
+        return this.http.get<any>(`${this.apiUrl}/user/byId`, { params: {userId: id} });
       })
     ),
 

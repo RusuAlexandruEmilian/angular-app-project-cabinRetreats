@@ -59,11 +59,11 @@ export const httpInterceptor: HttpInterceptorFn = (req: any, next: any) => {
           return throwError(() => error)
         }
 
-        // if(errorCode === 'MISSING BOOKING DATA'){
-        //   console.log('Missing Booking Data!');
-        //   authService.logOut();
-        //   dialog.closeAll();
-        // }
+        if(errorCode === 'MISSING BOOKING DATA'){
+          console.log('Missing Booking Data!');
+          authService.logOut();
+          dialog.closeAll();
+        }
         
       }
       return throwError(() => error);

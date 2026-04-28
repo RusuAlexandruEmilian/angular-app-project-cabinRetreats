@@ -3,6 +3,7 @@ import { CabinStarRatingComponent } from '../cabin-star-rating/cabin-star-rating
 import { Review } from '../../core/models/review';
 import { HttpClient } from '@angular/common/http';
 import { formatDate } from '@angular/common';
+import { environment } from '../../../environments/environments';
 
 
 @Component({
@@ -14,6 +15,7 @@ import { formatDate } from '@angular/common';
 })
 export class UserReviewCardComponent implements OnInit{
   private http = inject(HttpClient);
+  private apiUrl = environment.apiUrl;
   @Input() review!: Review;
   userName!: string;
   reviewDate!: string;
@@ -25,7 +27,7 @@ export class UserReviewCardComponent implements OnInit{
   }
 
   getUserName(){
-    this.http.get<[{name: string}]>(`http://localhost:3000/search/user/name?user_id=${this.review.user_id}`).subscribe(name => {
+    this.http.get<[{name: string}]>(`${this.apiUrl}/search/user/name?user_id=${this.review.user_id}`).subscribe(name => {
       this.userName = name[0].name;
     })
   }

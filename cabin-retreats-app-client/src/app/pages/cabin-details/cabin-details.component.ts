@@ -14,6 +14,7 @@ import { Review } from '../../core/models/review';
 import { CabinImageGalleryComponent } from '../../shared/cabin-image-gallery/cabin-image-gallery.component';
 import { ReviewFormComponent } from '../../shared/review-form/review-form.component';
 import { CabinService } from '../../core/services/cabin.service';
+import { environment } from '../../../environments/environments';
 
 
 
@@ -29,6 +30,7 @@ import { CabinService } from '../../core/services/cabin.service';
 export class CabinDetailsComponent implements OnInit{
   private dialog = inject(Dialog);
   private cabinServices = inject(CabinService);
+  private apiUrl = environment.apiUrl;
   
   cabin!: Cabin | null;
   dataForReserveForm: any;
@@ -62,7 +64,7 @@ export class CabinDetailsComponent implements OnInit{
 
   getReviews(){
     if(this.cabin){
-      this.reviews$ = this.http.get<Review[]>(`http://localhost:3000/cabin/reviews?cabin_id=${this.cabin.id}`);
+      this.reviews$ = this.http.get<Review[]>(`${this.apiUrl}/cabin/reviews?cabin_id=${this.cabin.id}`);
       this.reviews$.subscribe(data => {
         this.numberOfReviews = data.length;
       })

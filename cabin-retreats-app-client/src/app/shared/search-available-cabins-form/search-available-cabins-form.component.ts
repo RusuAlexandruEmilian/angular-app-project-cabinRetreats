@@ -17,6 +17,7 @@ import { HeaderService } from '../../core/services/header.service';
 import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { CabinService } from '../../core/services/cabin.service';
+import { environment } from '../../../environments/environments';
 
 
 
@@ -49,7 +50,7 @@ export class SearchAvailableCabinsFormComponent{
   private headerService = inject(HeaderService);
   private router = inject(Router);
   private cabinService = inject(CabinService);
-
+  private apiUrl = environment.apiUrl;
   //Variables used to show or hide html elements
   isDestinationEmpty = false;
   isDestinationInputFocused: boolean = false;
@@ -196,7 +197,7 @@ export class SearchAvailableCabinsFormComponent{
   
   
   getDestination(destination: string): Observable<any>{
-    return this.http.get<any[]>(`http://localhost:3000/cabin/search/byDesinationInput?input_characters=${destination}`)
+    return this.http.get<any[]>(`${this.apiUrl}/cabin/search/byDesinationInput?input_characters=${destination}`)
   }
   
   setDestinationInputValue(value: string){

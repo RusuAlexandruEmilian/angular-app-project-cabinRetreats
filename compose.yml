@@ -1,27 +1,36 @@
 services:
   frontend:
-    build: ./cabin-retreats-app-client
-    ports: 
-      - 4200:4200
-    volumes: 
-      - ./cabin-retreats-app-client:/app
-      - /app/node_modules
-    environment:
-      - CHOKIDAR_USEPOLLING=true 
-    command: npx ng serve --host 0.0.0.0 --poll 1000 
-    depends_on:
-      - backend  
-
+    build: 
+      context: ./cabin-retreats-app-client
+      dockerfile: Dockerfile
+    restart: always
+    networks:
+      -app-network
     
   backend:
     build: ./cabin-retreats-app-server
+    restart: always
     env_file:
-      - ./cabin-retreats-app-server/.env
+      - .env
+    networks:
+      -app-network
+
+  proxy:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: always
     ports:
-      - 3000:3000
-    volumes: 
-      - ./cabin-retreats-app-server:/app
-      - /app/node_modules
-    command: npx nodemon -L index.js 
+      - '80:80'
+      - '443:443'
+      - '81:81' 
+    volumes:
+      - ./proxy_data:/data
+      - ./letsencrypt:/etc/letsencrypt
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
     
   

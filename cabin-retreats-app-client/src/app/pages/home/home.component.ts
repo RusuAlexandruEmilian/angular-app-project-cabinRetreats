@@ -12,6 +12,7 @@ import { CabinService } from '../../core/services/cabin.service';
 import { AuthenticationService } from '../../core/services/authentication.service';
 import { ReserveFormComponent } from '../../shared/reserve-form/reserve-form.component';
 import { Dialog } from '@angular/cdk/dialog';
+import { environment } from '../../../environments/environments';
 
 @Component({
   selector: 'app-home',
@@ -30,6 +31,7 @@ export class HomeComponent {
   numberOfNights!: number | null; 
   check_in!: string | null;
   check_out!: string | null;
+  private apiUrl = environment.apiUrl;
   
   
   
@@ -144,7 +146,7 @@ export class HomeComponent {
   }
 
   protectedRequest(){
-    this.http.get<Cabin[]>('http://localhost:3000/protected').subscribe(data => {
+    this.http.get<Cabin[]>(`${this.apiUrl}/protected`).subscribe(data => {
       console.log(data);
     })
   }

@@ -1,15 +1,25 @@
-FROM node:trixie
+# Stage1: Build the angular app
+FROM node:alpine AS build
 
 WORKDIR /app
 
-RUN npm install -g @angular/cli
+COPY package*.json ./
 
-COPY package.json package-lock.json ./
-
-RUN npm install
+RUN npm ci
 
 COPY . .
 
-EXPOSE 4200
+RUN npm run build --configuration=production
 
-CMD ["npm", "start"]
+# Stage2: Serve angular app with nginx
+FROM nginx:alpine
+
+COPY --from=build /app/dist/cabinRetreats-angular-client /usr/share/nginx/html
+
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
+
+
