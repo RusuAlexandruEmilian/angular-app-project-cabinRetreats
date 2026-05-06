@@ -19,50 +19,7 @@
     
         <div class="review-form-container" #reviewFormContainer>
            
-            <!-- @if(showWrongLoginDetailsWarning){
-                <div class="wrong-details-warning">
-                    <div id="wrong-details-warning-message">
-                        <img id="input-warning-icon" src="assets/icons/exclamation.png">
-                        Wrong email or password
-                    </div>
-               </div>
-            } -->
-            
-        
             <form class="review-form" [formGroup]="reviewForm" (submit)="createReview()">
-                <!-- <div class="user-section">
-                    <div id="user-section-title">User</div>
-                    <div id="email-password-container">
-                        <div id="email-container">
-                            <div class="label">Email*</div>
-                            <input class="input" type="text" formControlName="email">
-        
-                            @if(showInputWarning === 'email'){
-                                <div class="input-warning-container">
-                                    <img id="input-warning-icon" src="assets/icons/exclamation.png">
-                                    <div class="input-warning">Please insert an email</div>
-                                </div>
-                            }
-                            
-                        </div>
-        
-                        <div id="password-container">
-                                <div class="label">Password*</div>
-                                <input class="input" type="text" formControlName="password">
-        
-                                @if(showInputWarning === 'password'){
-                                    <div class="input-warning-container">
-                                        <img id="input-warning-icon" src="assets/icons/exclamation.png">
-                                        <div class="input-warning">Please insert a password</div>
-                                    </div>
-                                }
-                    
-                            
-                        </div>
-                    </div>
-                </div> -->
-        
-        
                 <div class="review-section">
                     <div class="label" id="rating-label">Rating</div>
                     <app-review-form-star-rating (sendRating)="rating=$event"/>
@@ -80,7 +37,6 @@
     
 
     @if(showSubmitMessage){
-        <!-- Message on form submit -->
         <div class="message-form-submit-wrapper">
             <div class="message-form-submit">
                 <img id="check-icon" src="{{ submitMessageImg }}">

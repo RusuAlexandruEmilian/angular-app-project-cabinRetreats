@@ -19,19 +19,6 @@ import { RouterModule } from '@angular/router';
 import { CabinService } from '../../core/services/cabin.service';
 
 
-
-
-
-
-
-// @Injectable({
-//   providedIn: 'root'
-// })
-// export class searchAvailableCabinsEvent {
-//   events = new EventEmitter<string[]>();
-// }
-
-
 @Component({
   selector: 'app-search-available-cabins-form',
   standalone: true,
@@ -128,32 +115,6 @@ export class SearchAvailableCabinsFormComponent{
   }
 
   ngOnInit() {
-    //Subscribe to form value changes to update `myDate` later
-    // this.range.valueChanges.subscribe(value => {
-    //   if (value.start) {
-    //     this.check_in = formatDate(value.start, 'EEE, MMM d, y', 'en-us'); 
-    //   }
-
-    //   if (value.end) {
-    //     this.check_out = formatDate(value.end, 'EEE, MMM d, y', 'en-us');
-    //   }
-      
-    // });
-
-
-
-    
-    
-    
-    // this.range.valueChanges.subscribe(value => {
-    //   if (value.start) {
-    //     this.check_in_database = formatDate(value.start, 'y-MM-dd', 'en-us'); 
-    //   }
-
-    //   if (value.end) {
-    //     this.check_out_database = formatDate(value.end, 'y-MM-dd', 'en-us');
-    //   }
-    // });
 
     this.minDate = new Date();
 
@@ -167,26 +128,6 @@ export class SearchAvailableCabinsFormComponent{
       this.check_out = formatDate(this.cabinService.searchInputs().end_date?.toString() || 'Check-out', 'EEE, MMM d, y', 'en-us');
     }
 
-    // this.destinationValue.valueChanges.subscribe(value => {
-    //   this.destinationValueTrack = value!;
-    //   if(value != ''){
-    //     this.getDestination(value!);
-    //   }
-      
-      
-    // });
-
-    /*
-    this.headerService.logoClickEvent.subscribe(() => {
-      this.destinationValue.setValue('');
-      this.range.get('pets')?.setValue(false);
-      this.adultsNumber = 1;
-      this.childrenNumber = 0;
-      this.check_in = 'Check-in';
-      this.check_out = 'Check-out';
-
-    })
-      */
   } 
 
 
@@ -204,67 +145,59 @@ export class SearchAvailableCabinsFormComponent{
   }
   
 
-
-
-  
-
-  
   searchAvailableCabins(){
 
     if(!this.destinationValue.value){
       this.isDestinationEmpty = true;
     }else{
         
-    //If only the check in-date is selected than add by default the next day to check-out date when button is pressed
-    if(this.check_in_database != 'Check-in' && this.check_out_database === 'Check-out'){
-      this.check_out_database = new Date(this.check_in_database);
-      this.check_out_database.setDate(this.check_out_database.getDate() + 1)
-      this.check_out_database = formatDate( this.check_out_database, 'y-MM-dd', 'en-us'); 
-
-      this.check_in = formatDate(this.check_in_database, 'EEE, MMM d, y', 'en-us'); 
-      this.check_out = formatDate(this.check_out_database, 'EEE, MMM d, y', 'en-us');
-
+      //If only the checkin-date is selected than add by default the next day to check-out date when button is pressed
+      if(this.check_in_database != 'Check-in' && this.check_out_database === 'Check-out'){
+        this.check_out_database = new Date(this.check_in_database);
+        this.check_out_database.setDate(this.check_out_database.getDate() + 1)
+        this.check_out_database = formatDate( this.check_out_database, 'y-MM-dd', 'en-us'); 
+      
+        this.check_in = formatDate(this.check_in_database, 'EEE, MMM d, y', 'en-us'); 
+        this.check_out = formatDate(this.check_out_database, 'EEE, MMM d, y', 'en-us');
+      
+        const start = this.check_in_database.toString().split('T')[0];
+        const end = this.check_out_database.toString().split('T')[0];
+        
+      }
+    
+      //If neither a check-in date or check-out date is selected than add by default the current date for ckeck-in and  the next day for check-out date when button is pressed
+      if(this.check_in_database === 'Check-in' && this.check_out_database === 'Check-out'){
+        this.check_in_database = new Date();
+        this.check_out_database = new Date(this.check_in_database);
+        this.check_out_database.setDate(this.check_out_database.getDate() + 1);
+        this.check_out_database = formatDate( this.check_out_database, 'y-MM-dd', 'en-us'); 
+        this.check_in_database = formatDate( this.check_in_database, 'y-MM-dd', 'en-us');
+        
+        this.check_in = formatDate(this.check_in_database, 'EEE, MMM d, y', 'en-us'); 
+        this.check_out = formatDate(this.check_out_database, 'EEE, MMM d, y', 'en-us');
+      
+        const start = this.check_in_database.toString().split('T')[0];
+        const end = this.check_out_database.toString().split('T')[0];
+        
+      }
+    
+    
       const start = this.check_in_database.toString().split('T')[0];
       const end = this.check_out_database.toString().split('T')[0];
-      
-    }
-
-
-    if(this.check_in_database === 'Check-in' && this.check_out_database === 'Check-out'){
-      this.check_in_database = new Date();
-      this.check_out_database = new Date(this.check_in_database);
-      this.check_out_database.setDate(this.check_out_database.getDate() + 1);
-      this.check_out_database = formatDate( this.check_out_database, 'y-MM-dd', 'en-us'); 
-      this.check_in_database = formatDate( this.check_in_database, 'y-MM-dd', 'en-us');
-      
-      this.check_in = formatDate(this.check_in_database, 'EEE, MMM d, y', 'en-us'); 
-      this.check_out = formatDate(this.check_out_database, 'EEE, MMM d, y', 'en-us');
-
-      const start = this.check_in_database.toString().split('T')[0];
-      const end = this.check_out_database.toString().split('T')[0];
-      
-    }
-
-
-    const start = this.check_in_database.toString().split('T')[0];
-    const end = this.check_out_database.toString().split('T')[0];
-
-    const withPets = this.pets.value ? 1 : 0;
-
-    this.cabinService.clearSearchInputs = false;
-
-    this.cabinService.getAvailableCabins({ 
-      start_date: start,
-      end_date: end,
-      destination: this.destinationValue.value,
-      pets: withPets,
-      nr_adults: this.adultsNumber.toString(), 
-      nr_children: this.childrenNumber.toString()
-    });
-    //this.searchEvent.events.emit([start, end, this.destinationValue.value, petsAllowed, this.adultsNumber.toString(), this.childrenNumber.toString()]);
-
-    //this.router.navigate([''], {state: {data: [start, end, this.destinationValue.value, petsAllowed, this.adultsNumber.toString(), this.childrenNumber.toString()]}});
-    this.router.navigate(['']);
+    
+      const withPets = this.pets.value ? 1 : 0;
+    
+      this.cabinService.clearSearchInputs = false;
+    
+      this.cabinService.getAvailableCabins({ 
+        start_date: start,
+        end_date: end,
+        destination: this.destinationValue.value,
+        pets: withPets,
+        nr_adults: this.adultsNumber.toString(), 
+        nr_children: this.childrenNumber.toString()
+      });
+      this.router.navigate(['']);
 
     
 

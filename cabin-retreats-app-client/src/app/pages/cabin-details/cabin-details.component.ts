@@ -39,13 +39,10 @@ export class CabinDetailsComponent implements OnInit{
   
   
   constructor(private activatedRoute: ActivatedRoute, private router: Router, private http: HttpClient){
-    //this.cabinId = this.router.getCurrentNavigation()?.extras?.state?.['data'][0];
-    //this.dataForReserveForm = this.router.getCurrentNavigation()?.extras?.state?.['data'];
+
   }
  
   ngOnInit(){
-    //this.getCabinById();
-    //this.isNoDatesWarning = false;
     this.cabin = this.cabinServices.currentCabin;
     this.isNoDatesWarning = false;
     this.getReviews();
@@ -85,10 +82,5 @@ export class CabinDetailsComponent implements OnInit{
     });
   }
   
-  console(){
-    console.log(this.cabin?.id);
-    console.log(this.cabinServices.searchInputs());
-    console.log(this.cabinServices.currentCabin);
-  }
 
 }

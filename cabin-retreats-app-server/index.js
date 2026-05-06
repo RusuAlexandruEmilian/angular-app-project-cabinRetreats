@@ -4,7 +4,6 @@ const mysql = require('mysql');
 const bcrypt = require('bcrypt');
 const cors = require('cors');
 const db = require('./config/db.js');
-const cabinsDb = require('./cabins');
 const cookieParser = require('cookie-parser');
 app.use(cors({
   origin: 'http://localhost:4200',
@@ -32,24 +31,19 @@ app.use('/refreshToken', require('./routes/refresh'));
 app.use('/logout', require('./routes/logout'));
 
 app.get('/', async (req, res) => {
-    // try{
-    //   const allCabins = await db.query('Select * from cabin');
-    //   res.send(allCabins.rows);
-    // } catch (err) {
-    //   console.error('Database Error:', err.message);
+    try{
+      const allCabins = await db.query('Select * from cabin');
+      res.send(allCabins.rows);
+    } catch (err) {
+      console.error('Database Error:', err.message);
     
-    //   res.status(500).json({ 
-    //     success: false, 
-    //     error: 'Database query failed' 
-    //   });
-    // }
-      
-     res.json(cabinsDb);
+      res.status(500).json({ 
+        success: false, 
+        error: 'Database query failed' 
+      });
+    }
 });
 
-app.get('/protected', verifyJwt, (req, res) => {
-  res.json(cabinsDb);
-});
 app.get('/test-route', (req, res) => {
   res.send('New endpoint working!');
 })
@@ -69,10 +63,9 @@ app.get('/search/cabinId', async (req, res) => {
 });
 
 
-    // GET endpoint to check cabin availability
+// GET endpoint to check cabin availability
 app.get('/api/cabins/availability', async (req, res) => {
     const { start_date, end_date, destination, pets} = req.query;
-    // Validate input parameters
     if (!start_date || !end_date || !destination || !pets) {
       return res.status(400).json({ 
         success: false, 
@@ -96,39 +89,7 @@ app.get('/api/cabins/availability', async (req, res) => {
         message: 'End date cannot be before start date'
       });
     }
-    
-    /*
-    sql`
-      SELECT c. * 
-      FROM cabin c 
-      WHERE c.id NOT IN (
-	      SELECT DISTINCT b.cabin_id
-        FROM bookings b
-        WHERE (
-		      (b.start_date <= ${start_date} AND b.end_date > ${start_date}) OR
-          (b.start_date < ${end_date} AND b.end_date >= ${end_date}) OR
-          (b.start_date >= ${start_date} AND b.end_date <= ${end_date})
-        )
-      )
-    
-      AND (
-        c.location = ${destination} OR		
-        c.county= ${destination} OR
-        c.name = ${destination} 
-		
-      )
-
-      And (${pets} = 0 OR c.pets_allowed = ${pets})
-    
-    `
-    .then(availableCabins =>{
-      res.json(availableCabins);
-    })
-    .catch(err => {
-      console.error(err);
-      res.status(500).send('Database query failed');
-    });
-   */
+   
   const sql = `
     SELECT c. * 
       FROM cabin c 
@@ -166,51 +127,12 @@ app.get('/api/cabins/availability', async (req, res) => {
 });
 
 
-// *******  Search cabin by name or location or county according to characters in the search input  ******
-
+//Search cabin by name or location or county according to characters in the search input  
 app.get('/cabin/search/byDesinationInput', async (req, res) => {
   
-  const { input_characters } = req.query;
-
-  //query1 = "SELECT DISTINCT county, location FROM cabin WHERE county LIKE ? OR location LIKE ?"
-  //query2 = "SELECT DISTINCT county, location, name FROM cabin WHERE county LIKE ? OR location LIKE ? OR name LIKE ?"
-
-  
+  const { input_characters } = req.query; 
   const search_characters = input_characters + '%';
 
-  /*
-  if(input_characters.length === 1){
-    
-    
-    sql`
-      SELECT DISTINCT county, location FROM cabin WHERE county LIKE ${param} OR location LIKE ${param}
-    `
-    .then(results => {
-      const seen = new Set();
-      const filtered = [];
-
-      results.forEach(row => {
-        if(row.county[0].toLowerCase() === input_characters.toLocaleLowerCase()){
-          if(!seen.has(row.county)){
-            filtered.push({ county: row.county });
-            seen.add(row.county);
-          }
-        }
-
-
-        if(row.location[0].toLowerCase() === input_characters.toLocaleLowerCase()){
-            filtered.push(row);            
-        }
-      })
-      res.json(filtered);
-    })
-    .catch(err => {
-      console.error(err);
-      res.status(500).send('Database query failed');
-    })
-  }
-  */
-  
   if(input_characters.length === 1){
     const sql = 'Select Distinct county, location FROM cabin WHERE county ILIKE $1 OR location ILIKE $1';
     try{
@@ -241,53 +163,6 @@ app.get('/cabin/search/byDesinationInput', async (req, res) => {
     }
 
   }
-
-  /*
-  if(input_characters.length > 1){
-    
-    sql`
-    SELECT DISTINCT county, location, name FROM cabin WHERE county LIKE ${param} OR location LIKE ${param} OR name LIKE ${param}
-    `
-    .then(results => {
-      const seen = new Set();
-      const filtered = [];
-  
-      results.forEach(row => {
-        if (row.county && row.county.toLowerCase().startsWith(input_characters.toLowerCase())) {
-          const val = row.county;
-          if (!seen.has(`county:${val}`)) {
-            filtered.push({ county: val });
-            seen.add(`county:${val}`);
-          }
-        }
-  
-        if (row.location && row.location.toLowerCase().startsWith(input_characters.toLowerCase())) {
-          const val = row.location;
-          if (!seen.has(`location:${val}`)) {
-            filtered.push({ county: row.county, location: val });
-            seen.add(`location:${val}`);
-          }
-          
-        }
-
-        if (row.name && row.name.toLowerCase().startsWith(input_characters.toLowerCase())) {
-          const val = row.name;
-          if (!seen.has(`name:${val}`)) {
-            filtered.push({ county: row.county, location: row.location, name: val });
-            seen.add(`name:${val}`);
-          }
-          
-        }
-      });
-  
-      res.json(filtered);
-    })
-    .catch(err => {
-      console.error(err);
-      res.status(500).send('Database query failed');
-    })
-  }
-  */
 
   if(input_characters.length > 1){
     const sql = 'SELECT DISTINCT county, location, name FROM cabin WHERE county ILIKE $1 OR location ILIKE $1 OR name ILIKE $1'
@@ -338,7 +213,7 @@ app.get('/cabin/search/byDesinationInput', async (req, res) => {
 });
 
 
-
+//Book a cabin for logged in and valid users
 app.post('/book',  verifyJwt, async (req, res) =>{
   
   const { cabin_id, booking_details } = req.body;
@@ -405,40 +280,10 @@ app.get('/search/user/name', async (req, res) =>{
 
 
 //Create a review
-
 app.post('/create/review', verifyJwt, async(req, res) => {
 
   const {cabinId, review, rating} = req.body;
   const userId = req.userId;
-  
-  // sql`
-  // SELECT * FROM users WHERE email = ${email}
-  // `
-  // .then(user => {
-  //   if(user.length > 0){
-      
-  //       bcrypt.compare(password, user[0].password, (err, match) => {
-  //         if (err) {
-  //           return res.status(500).json({ message: 'Error comparing passwords' });
-  //         }
-  
-  //         if(match){
-  //           //It also creates the review by  calling the createReview function within it
-  //           check_booking_and_review(user[0].id);
-  //         }else{
-  //           res.json({message: "Wrong email or password"});
-  //         }
-          
-  //       });
-  //     }else{
-  //       res.json({message: "Wrong email or password"});
-  //     }
-  // })
-  // .catch(err => {
-  //   console.error(err);
-  //   res.status(500).send('Database query failed');
-  // })
-
   
   const check_booking_and_review_sql = 
   `
@@ -477,50 +322,7 @@ app.post('/create/review', verifyJwt, async(req, res) => {
       });
     }
   
-  
-  // function check_booking_and_review(user_id){
-    
-  //   sql`
-  //   SELECT 
-  //   b.user_id,
-  //   b.cabin_id,
-  //   CASE 
-  //       WHEN b.user_id IS NOT NULL AND r.user_id IS NOT NULL THEN 'Booking and Review Found'
-  //       WHEN b.user_id IS NOT NULL AND r.user_id IS NULL THEN 'Booking Found, No Review'
-  //       ELSE 'No Booking Found'
-  //   END AS status
-  //   FROM 
-  //       bookings b
-  //   LEFT JOIN 
-  //       reviews r 
-  //       ON b.user_id = r.user_id 
-  //       AND b.cabin_id = r.cabin_id
-  //   WHERE 
-  //       b.user_id = ${user_id}   
-  //       AND b.cabin_id = ${cabin_id}
-  //   `
-  //   .then(result => {
-  //     if(result.length > 0){
-  //       if(result[0].status === "Booking and Review Found"){
-  //         res.json({message: "Booking and Review Found"});
-  //       }else{
-  //         createReview(user_id);
-  //       }
-  //     }else{
-  //       res.json({message: "Booking not found"});
-  //     }
-      
-  //   })
-  //   .catch(err => {
-  //     console.error(err);
-  //     res.status(500).send('Database query failed');
-  //   })
-  // }
-
-
-
   async function createReview(userId, cabinId, review, rating){
-      //console.log(`${userId} ${cabinId} ${review} ${rating}`);
     const create_review_sql = 
       `
       INSERT INTO reviews (user_id, cabin_id, created_at, review, rating) VALUES ($1, $2, NOW(), $3, $4)
@@ -534,7 +336,7 @@ app.post('/create/review', verifyJwt, async(req, res) => {
           ratingsSum = ratingsSum + parseInt(reviews.rows[i].rating);
       };
       cabinRating = ratingsSum / reviews.rows.length;
-      console.log(`${ratingsSum}, ${cabinRating}`);
+      
 
       await db.query('UPDATE cabin SET rating = $1 WHERE id = $2', [cabinRating, cabinId]);
 
@@ -547,43 +349,7 @@ app.post('/create/review', verifyJwt, async(req, res) => {
         error: 'Database query failed' 
       });
     }
-  //   .then(success => {
-  //     sql`
-  //     SELECT * FROM reviews WHERE cabin_id = ${cabin_id}
-  //     `
-  //     .then(reviews => {
-        
-  //       let ratingsSum = 0;
-  //       let cabinRating;
-  //       for(let j = 0; j < reviews.length; j++){
-  //         ratingsSum = ratingsSum + parseInt(reviews[j].rating);
-  //       };
-  //       cabinRating = ratingsSum / reviews.length;
-  //       console.log(cabinRating);
-        
-  //     sql`
-  //     UPDATE cabin SET rating = ${cabinRating} WHERE id = ${cabin_id} 
-  //     `
-  //     .then(ratingUpdated => {
-        
-  //       res.json({message: "Review created successfully"})
-  //     })
-  //     .catch(err => {
-  //       console.error(err);
-  //       res.status(500).send('Database query failed');
-  //     })
-  //     })
-  //     .catch(err => {
-  //       console.error(err);
-  //       res.status(500).send('Database query failed');
-  //     })
-
-  //   })
-  //   .catch(err => {
-  //     console.error(err);
-  //     res.status(500).send('Database query failed');
-  //   })
-    }
+  }
 });
 
 app.get('/user/byId', async(req, res) => {

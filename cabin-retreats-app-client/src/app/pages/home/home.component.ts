@@ -24,7 +24,6 @@ import { Dialog } from '@angular/cdk/dialog';
 export class HomeComponent {
 
   private url = 'http://localhost:3000'
-  //cabins$!: Observable<Cabin[]>; 
   private subscription!: Subscription;
   guests: string | null = '';
   numberOfNights!: number | null; 
@@ -35,94 +34,12 @@ export class HomeComponent {
   
 
   constructor(private http: HttpClient, private headerService: HeaderService, private router: Router, private activatedRoute: ActivatedRoute) {}
-  /*
-  ngOnInit() {
-    this.subscription = this.searchEvent.events.subscribe(
-      (eventData) => {
-        if (eventData) {
-          this.getAvailableCabins(eventData);
-          this.check_in = eventData[0];
-          this.check_out = eventData[1];
-          const adultsNumber = parseInt(eventData[4]);
-          const childrenNumber = parseInt(eventData[5]);
-          const checkIn = new Date(eventData[0]);
-          const checkOut = new Date(eventData[1]);
-          // Get the difference in milliseconds
-          const diffInMs = checkOut.getTime() - checkIn.getTime();
-
-          // Convert milliseconds to days
-          const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
-          
-          this.numberOfNights = diffInDays;
-
-          if(adultsNumber > 0 && childrenNumber > 0){
-            this.guests = `${diffInDays} nights, ${adultsNumber} adults, ${childrenNumber} children`;
-          }else{
-            this.guests = `${diffInDays} nights, ${adultsNumber} adults`
-          }
-         
-        }
-        
-      }
-    );
-
-    this.subscription = this.headerService.logoClickEvent.subscribe(
-      (eventData) => {
-        if (eventData) {
-          this.getAllCabins();
-          this.guests = null;
-          this.numberOfNights = null;
-        }
-        
-      }
-    );
-    
-
- 
-
-    
-
-    this.subscription = this.activatedRoute.paramMap.subscribe(() => {
-      if(history.state.data){
-          this.getAvailableCabins(history.state.data);
-          this.check_in = history.state.data[0];
-          this.check_out = history.state.data[1];
-          const adultsNumber = parseInt(history.state.data[4]);
-          const childrenNumber = parseInt(history.state.data[5]);
-          const checkIn = new Date(history.state.data[0]);
-          const checkOut = new Date(history.state.data[1]);
-          // Get the difference in milliseconds
-          const diffInMs = checkOut.getTime() - checkIn.getTime();
-
-          // Convert milliseconds to days
-          const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
-          
-          this.numberOfNights = diffInDays;
-
-          if(adultsNumber > 0 && childrenNumber > 0){
-            this.guests = `${diffInDays} nights, ${adultsNumber} adults, ${childrenNumber} children`;
-          }else{
-            this.guests = `${diffInDays} nights, ${adultsNumber} adults`
-          }
-      }else if(history.state.getAllCabins){
-        this.getAllCabins();
-      }else{
-        this.getAllCabins();
-      }
-    })
-    
-  }
-
-  ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
-  }
-  */
+  
   private authService = inject(AuthenticationService);
   private cabinService = inject(CabinService);
   private dialog = inject(Dialog);
   cabins!: Cabin[];
+  
   ngOnInit(){
     if(this.cabinService.clearSearchInputs){
       this.cabinService.getAllCabins();
@@ -134,8 +51,6 @@ export class HomeComponent {
 
   
   getAllCabins(){
-     //this.cabins$ = this.http.get<Cabin[]>('http://localhost:3000/');
-    //return this.http.get<Cabin[]>('http://localhost:3000');
     this.cabinService.getAllCabins();
   }
 
@@ -151,10 +66,6 @@ export class HomeComponent {
 
   refreshToken(){
     this.authService.refreshToken();
-  }
-
-  openModal(){
-    this.dialog.open(ReserveFormComponent, { autoFocus: false, disableClose: false, panelClass: 'reserve-dialog'});
   }
 
 }
